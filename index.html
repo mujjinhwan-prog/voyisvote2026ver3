@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>보이(VOY)는 VOTE. ver2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+:root{
+  --green:#1f7a4d;
+  --green-deep:#155c39;
+  --green-soft:#e8f4ec;
+  --green-line:#bfe0cc;
+  --white:#ffffff;
+  --ink:#1a1a1a;
+  --yellow:#ffd21f;
+  --yellow-deep:#e6b800;
+  --red:#e23b2e;
+  --red-deep:#c0291e;
+  --gray:#6b7770;
+  --line:#dfe7e2;
+  --shadow:0 8px 30px rgba(21,92,57,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  background:radial-gradient(1200px 600px at 100% -10%,#f3faf5 0%,transparent 60%),radial-gradient(900px 500px at -10% 110%,#eef8f1 0%,transparent 55%),var(--white);
+  color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+.app{max-width:900px;margin:0 auto;padding:22px 18px 90px;min-height:100vh;}
+
+/* 헤더 */
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 4px 18px;}
+.logo{font-family:'Jua',sans-serif;font-size:22px;color:var(--green-deep);display:flex;align-items:center;gap:9px;letter-spacing:-.5px;}
+.logo .dot{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green-deep));display:grid;place-items:center;color:#fff;font-size:16px;box-shadow:var(--shadow);}
+.ev-tag{margin-left:auto;font-size:13px;color:var(--green-deep);background:var(--green-soft);border:1px solid var(--green-line);padding:6px 12px;border-radius:999px;font-weight:700;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* 카드 */
+.card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:26px 22px;box-shadow:var(--shadow);margin-bottom:18px;}
+.card h1{font-family:'Jua',sans-serif;font-weight:400;font-size:27px;margin:0 0 6px;color:var(--green-deep);letter-spacing:-.5px;}
+.card h2{font-family:'Jua',sans-serif;font-weight:400;font-size:21px;margin:0 0 14px;color:var(--ink);letter-spacing:-.3px;}
+.sub{color:var(--gray);font-size:14px;margin:0 0 20px;line-height:1.6;}
+
+/* 입력 */
+label.fl{display:block;font-weight:700;font-size:14px;margin:14px 0 7px;color:var(--ink);}
+input[type=text],input[type=password],input[type=number],textarea,select{width:100%;border:2px solid var(--line);border-radius:13px;padding:13px 15px;font-size:16px;font-family:inherit;color:var(--ink);background:#fbfdfc;transition:border-color .15s,box-shadow .15s;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px rgba(31,122,77,.12);}
+textarea{resize:vertical;min-height:150px;line-height:1.7;}
+.pw-input{letter-spacing:8px;font-weight:700;text-align:center;}
+
+/* 버튼 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:13px;padding:14px 22px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .08s,filter .15s,box-shadow .15s;width:100%;}
+.btn:active{transform:translateY(1px);}
+.btn-green{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;box-shadow:0 6px 18px rgba(31,122,77,.3);}
+.btn-green:hover{filter:brightness(1.05);}
+.btn-yellow{background:var(--yellow);color:var(--ink);box-shadow:0 6px 18px rgba(230,184,0,.35);}
+.btn-yellow:hover{filter:brightness(1.03);}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 6px 18px rgba(226,59,46,.3);}
+.btn-red:hover{filter:brightness(1.05);}
+.btn-ghost{background:var(--green-soft);color:var(--green-deep);border:1.5px solid var(--green-line);box-shadow:none;}
+.btn-dark{background:var(--ink);color:#fff;}
+.btn-sm{padding:10px 14px;font-size:14px;width:auto;}
+.btn-row{display:flex;gap:10px;margin-top:18px;}
+.btn-row .btn{width:auto;flex:1;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* 홈 */
+.choice{display:grid;gap:14px;}
+.choice-btn{text-align:left;border:2px solid var(--line);border-radius:18px;background:#fff;padding:20px;cursor:pointer;transition:border-color .15s,transform .08s;display:flex;gap:16px;align-items:center;}
+.choice-btn:hover{border-color:var(--green);}
+.choice-btn:active{transform:translateY(1px);}
+.choice-ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:24px;flex-shrink:0;}
+.choice-ic.g{background:var(--green-soft);}
+.choice-ic.y{background:#fff6d0;}
+.choice-btn .t{font-weight:900;font-size:17px;}
+.choice-btn .d{color:var(--gray);font-size:13px;margin-top:3px;}
+
+/* 허브 그리드 */
+.hub-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:620px){.hub-grid{grid-template-columns:1fr;}}
+.hub-tile{border:2px solid var(--line);border-radius:18px;background:#fff;padding:22px 16px;text-align:center;cursor:pointer;transition:border-color .15s,transform .08s;}
+.hub-tile:hover{border-color:var(--green);}
+.hub-tile:active{transform:translateY(1px);}
+.hub-tile .ic{font-size:30px;margin-bottom:10px;}
+.hub-tile .t{font-weight:900;font-size:16px;}
+.hub-tile .d{color:var(--gray);font-size:12px;margin-top:5px;line-height:1.5;}
+
+/* 스텝 */
+.stepper{display:flex;align-items:center;gap:6px;margin:4px 0 18px;flex-wrap:wrap;}
+.chip{font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;background:var(--green-soft);color:var(--green-deep);}
+.chip.cur{background:var(--green);color:#fff;}
+
+/* 진행바 */
+.pbar{height:9px;background:var(--green-soft);border-radius:99px;overflow:hidden;margin:6px 0 4px;}
+.pbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--green));transition:width .3s;}
+
+/* ============================================================
+   이미지 4장 레이아웃
+   ============================================================ */
+.img-grid-wrap{
+  width:100%;
+  border-radius:16px;
+  overflow:hidden;
+  background:#1a1a1a;
+  position:relative;
+  border:1px solid var(--line);
+}
+/* 1장: 원본 비율 그대로, 가운데 */
+.img-grid-1{display:flex;justify-content:center;}
+.img-grid-1 .img-slot{width:100%;}
+
+/* 2장: 좌우 나란히, 각자 비율 유지 */
+.img-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2px;align-items:start;}
+
+/* 3장: 가로 3등분, 중앙 이미지 앞으로 강조 */
+.img-grid-3{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:2px;align-items:center;position:relative;}
+.img-grid-3 .img-slot:nth-child(2){transform:scale(1.08);z-index:2;box-shadow:0 4px 20px rgba(0,0,0,.5);border-radius:4px;position:relative;}
+
+/* 4장: 2x2 그리드 */
+.img-grid-4{display:grid;grid-template-columns:1fr 1fr;gap:2px;align-items:start;}
+
+/* 공통 슬롯 - contain으로 전체 보임 */
+.img-slot{background:#1a1a1a;position:relative;}
+.img-slot img{width:100%;height:auto;display:block;object-fit:contain;}
+.img-slot-empty{width:100%;min-height:100px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:22px;}
+
+/* 업로더 영역 */
+.uploader-wrap{
+  border:2.5px dashed var(--green-line);border-radius:16px;
+  background:var(--green-soft);overflow:hidden;position:relative;cursor:pointer;
+}
+.uploader-wrap:hover{border-color:var(--green);}
+.uploader-empty{
+  min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  color:var(--green-deep);
+}
+.uploader-empty .up-ic{font-size:38px;}
+.uploader-empty .up-t{font-weight:700;font-size:14px;}
+.uploader-empty .up-d{font-size:12px;color:var(--gray);}
+
+/* 업로드된 이미지 미리보기 + 삭제 버튼 */
+.img-del-btn{
+  position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;
+  background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;
+  font-size:13px;display:flex;align-items:center;justify-content:center;z-index:5;
+  line-height:1;
+}
+.img-add-btn{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;font-size:13px;font-weight:700;color:var(--green-deep);
+  background:var(--green-soft);border:1.5px dashed var(--green-line);
+  border-radius:10px;padding:9px 0;cursor:pointer;margin-top:8px;
+  transition:background .15s;
+}
+.img-add-btn:hover{background:#d4eddc;}
+
+/* 도트 */
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.dots i{width:13px;height:13px;border-radius:50%;background:var(--line);font-style:normal;}
+.dots i.done{background:var(--green);}
+.dots i.cur{background:var(--yellow);box-shadow:0 0 0 3px #fff6d0;}
+
+/* 심사 화면 */
+.judge-img-grid{
+  width:100%;border-radius:16px;overflow:hidden;
+  background:#1a1a1a;border:1px solid var(--line);margin-bottom:16px;
+}
+.judge-title{font-family:'Jua',sans-serif;font-size:22px;color:var(--green-deep);text-align:center;padding:12px;background:var(--green-soft);border-radius:12px;margin-bottom:8px;letter-spacing:-.3px;}
+.judge-text{background:var(--green-soft);border:1px solid var(--green-line);border-radius:14px;padding:16px;font-size:16px;line-height:1.85;white-space:pre-wrap;color:var(--ink);font-family:'Noto Sans KR',sans-serif;margin-bottom:6px;}
+.crit{margin-top:18px;}
+.crit-row{padding:14px 0;border-bottom:1px dashed var(--line);}
+.crit-row:last-child{border-bottom:none;}
+.crit-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.crit-name{font-weight:900;font-size:16px;}
+.crit-val{font-family:'Jua',sans-serif;font-size:22px;color:var(--green-deep);min-width:46px;text-align:right;}
+.crit-val b{font-size:13px;color:var(--gray);font-weight:400;}
+.scale{display:flex;gap:5px;}
+.scale button{flex:1;border:1.5px solid var(--green-line);background:#fff;color:var(--green-deep);border-radius:9px;padding:9px 0;font-size:14px;font-weight:700;cursor:pointer;transition:all .1s;font-family:inherit;}
+.scale button.on{background:var(--green);color:#fff;border-color:var(--green);transform:scale(1.04);}
+.scale button.on.hi{background:var(--green-deep);}
+
+/* 진행자 화면 */
+.host-work{display:flex;gap:20px;align-items:flex-start;margin-top:6px;}
+.host-work-left{flex:0 0 42%;max-width:42%;}
+.host-work-right{flex:1;min-width:0;}
+.host-title{font-family:'Jua',sans-serif;font-size:21px;color:var(--green-deep);text-align:center;letter-spacing:-.3px;line-height:1.4;margin-top:10px;}
+.host-label{font-weight:900;font-size:13px;color:var(--gray);margin-bottom:8px;}
+.host-text{background:var(--green-soft);border:1px solid var(--green-line);border-radius:14px;padding:16px;font-size:16px;line-height:1.85;white-space:pre-wrap;color:var(--ink);font-family:'Noto Sans KR',sans-serif;max-height:42vh;overflow:auto;}
+@media(max-width:620px){
+  .host-work{flex-direction:column;gap:14px;}
+  .host-work-left,.host-work-right{flex:none;max-width:100%;width:100%;}
+}
+
+/* 진행자 복귀 QR */
+.host-recover-bottom{margin-top:22px;padding-top:20px;border-top:1.5px dashed var(--green-line);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+.host-recover-bottom #hostRqr canvas,.host-recover-bottom #hostRqr img{display:block;width:120px;height:120px;border-radius:8px;}
+.host-recover-bottom .hr-text{font-size:13.5px;color:var(--green-deep);font-weight:700;line-height:1.7;max-width:480px;}
+.host-recover-bottom .hr-text b{color:var(--red-deep);}
+
+/* 현황판 */
+.status-grid{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0;}
+.jpill{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--gray);}
+.jpill.done{background:var(--green);color:#fff;border-color:var(--green);}
+.jpill .d2{width:9px;height:9px;border-radius:50%;background:var(--line);}
+.jpill.done .d2{background:#fff;}
+.counter-big{font-family:'Jua',sans-serif;font-size:40px;color:var(--green-deep);text-align:center;letter-spacing:-1px;}
+.counter-big small{font-size:18px;color:var(--gray);}
+
+/* QR 화면 */
+.qr-wrap{text-align:center;padding:8px 0;}
+.qr-box{display:inline-block;background:#fff;padding:16px;border-radius:18px;border:2px solid var(--green-line);box-shadow:var(--shadow);}
+.qr-box canvas,.qr-box img{display:block;}
+.qr-url{margin-top:12px;font-size:13px;color:var(--gray);word-break:break-all;background:var(--green-soft);padding:10px 12px;border-radius:10px;}
+
+/* 결과 */
+.rank{display:flex;gap:14px;align-items:center;padding:16px;border-radius:16px;margin-bottom:11px;border:1px solid var(--line);background:#fff;}
+.rank.top1{background:linear-gradient(135deg,#fffdf2,#fff6d0);border-color:var(--yellow);box-shadow:0 8px 24px rgba(230,184,0,.25);}
+.rank.top2{background:#f7faf8;border-color:var(--green-line);}
+.rank.top3{background:#fbfdfc;border-color:var(--green-line);}
+.medal{font-family:'Jua',sans-serif;font-size:26px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;color:#fff;}
+.medal.m1{background:var(--yellow);color:var(--ink);}
+.medal.m2{background:#9fb3a8;}
+.medal.m3{background:#cd9b6a;}
+.medal.mx{background:var(--green-soft);color:var(--green-deep);font-size:18px;}
+.rank-thumb{width:54px;height:54px;border-radius:11px;object-fit:cover;background:#eee;flex-shrink:0;border:1px solid var(--line);}
+.rank-info{flex:1;min-width:0;}
+.rank-info .nm{font-weight:900;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rank-info .who{font-size:12.5px;color:var(--red-deep);font-weight:700;margin-top:2px;}
+.rank-info .who .org{color:var(--gray);font-weight:500;}
+.rank-score{font-family:'Jua',sans-serif;font-size:24px;color:var(--green-deep);text-align:right;}
+.rank-score small{font-size:12px;color:var(--gray);display:block;font-family:'Noto Sans KR';}
+
+/* ============================================================
+   Voice 미리보기 페이지
+   ============================================================ */
+/* 카드 리스트 (YouTube 스타일) */
+.preview-list{display:flex;flex-direction:column;gap:0;}
+.preview-item{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 4px;border-bottom:1px solid var(--line);
+  cursor:pointer;transition:background .12s;border-radius:10px;
+}
+.preview-item:hover{background:var(--green-soft);}
+.preview-item:last-child{border-bottom:none;}
+.preview-thumb{
+  flex:0 0 120px;width:120px;height:68px;
+  border-radius:8px;overflow:hidden;background:#e0e0e0;
+  border:1px solid var(--line);position:relative;
+}
+.preview-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.preview-thumb-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:22px;}
+.preview-num{
+  position:absolute;bottom:4px;right:6px;
+  background:rgba(0,0,0,.65);color:#fff;
+  font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;
+}
+.preview-info{flex:1;min-width:0;}
+.preview-title{font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.preview-snippet{font-size:12px;color:var(--gray);line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+
+/* 미리보기 상세 (단일 Voice) */
+.preview-detail-img{width:100%;border-radius:16px;overflow:hidden;background:#1a1a1a;border:1px solid var(--line);margin-bottom:14px;}
+.preview-detail-title{font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:700;color:var(--green-deep);text-align:center;margin:0 0 14px;line-height:1.4;}
+.preview-detail-text{background:var(--green-soft);border:1px solid var(--green-line);border-radius:14px;padding:16px;font-size:16px;line-height:1.85;white-space:pre-wrap;color:var(--ink);font-family:'Noto Sans KR',sans-serif;}
+
+/* 심사자 인원 설정 — 미리보기 버튼 박스 */
+.preview-btn-box{
+  position:absolute;top:26px;right:22px;
+  border:2px solid var(--green);border-radius:13px;
+  padding:10px 14px;text-align:center;cursor:pointer;
+  background:#fff;transition:background .12s;
+  min-width:110px;
+}
+.preview-btn-box:hover{background:var(--green-soft);}
+.preview-btn-box .pb-ic{font-size:22px;display:block;margin-bottom:4px;}
+.preview-btn-box .pb-t{font-size:12px;font-weight:700;color:var(--green-deep);display:block;line-height:1.3;}
+
+/* 진행자 Voice 리뷰 리스트 */
+.host-voicelist{display:flex;flex-direction:column;gap:14px;max-height:55vh;overflow-y:auto;margin:16px 0;padding-right:8px;}
+.host-voicelist::-webkit-scrollbar{width:8px;}
+.host-voicelist::-webkit-scrollbar-track{background:#f0f0f0;border-radius:10px;}
+.host-voicelist::-webkit-scrollbar-thumb{background:var(--green-line);border-radius:10px;}
+.hvl-item{display:flex;align-items:flex-start;gap:14px;padding:12px;background:var(--green-soft);border:1px solid var(--green-line);border-radius:12px;flex-shrink:0;}
+.hvl-num{flex:0 0 38px;font-family:'Noto Sans KR',sans-serif;font-size:18px;color:var(--green-deep);font-weight:700;text-align:center;padding-top:6px;}
+.hvl-thumb{flex:0 0 80px;width:80px;height:60px;border-radius:8px;overflow:hidden;background:#e0e0e0;border:1px solid var(--green-line);}
+.hvl-thumb img{width:100%;height:100%;object-fit:cover;}
+.hvl-thumb-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:18px;}
+.hvl-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.hvl-title{font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:var(--green-deep);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hvl-text{font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--ink);line-height:1.6;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+
+/* 알림 */
+.note{font-size:13px;padding:11px 14px;border-radius:11px;margin:12px 0;line-height:1.6;}
+.note.warn{background:#fff3f2;border:1px solid #f4c4bf;color:var(--red-deep);}
+.note.info{background:var(--green-soft);border:1px solid var(--green-line);color:var(--green-deep);}
+.note.yellow{background:#fff8d9;border:1px solid #f0dd8a;color:#7a5e00;}
+
+/* 푸터 */
+.foot{text-align:center;font-size:11px;color:#b8c4bd;letter-spacing:.4px;padding:26px 0 8px;font-weight:500;}
+
+/* 로딩 */
+.loading{position:fixed;inset:0;background:rgba(255,255,255,.8);display:none;place-items:center;z-index:100;backdrop-filter:blur(2px);}
+.loading.on{display:grid;}
+.spinner{width:46px;height:46px;border:5px solid var(--green-soft);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.hidden{display:none!important;}
+.center{text-align:center;}
+.big-emoji{font-size:46px;text-align:center;margin:6px 0;}
+
+/* 토스트 */
+#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:120;box-shadow:var(--shadow);max-width:88%;text-align:center;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+/* 라이트박스 */
+#lightbox{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);
+  display:none;align-items:center;justify-content:center;
+  z-index:200;cursor:zoom-out;padding:20px;
+}
+#lightbox.on{display:flex;}
+#lightbox img{
+  max-width:100%;max-height:90vh;
+  border-radius:12px;object-fit:contain;
+  box-shadow:0 8px 40px rgba(0,0,0,.6);
+  cursor:default;
+}
+#lightbox .lb-close{
+  position:fixed;top:16px;right:20px;
+  font-size:30px;color:#fff;cursor:pointer;
+  background:rgba(0,0,0,.4);border-radius:50%;
+  width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  line-height:1;border:none;
+}
+#lightbox .lb-close:hover{background:rgba(255,255,255,.2);}
+
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading"><div class="spinner"></div></div>
+<div id="toast"></div>
+<div id="lightbox" onclick="window.__lbClose(event)"><button class="lb-close" onclick="window.__lbClose()">✕</button><img id="lbImg" src=""></div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="dot">★</span> 보이(VOY)는 VOTE</div>
+    <div class="ev-tag hidden" id="evTag"></div>
+  </div>
+  <div id="screen"></div>
+  <div class="foot">© 2026 YUHAN Sales Planning Team. All rights reserved.</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot,
+  collection, getDocs, deleteDoc, runTransaction, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ============================================================
+   Firebase 설정
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIespzZird2IAMIos5TdGtZYxPS5GpmuM",
+  authDomain: "voyisvote.firebaseapp.com",
+  projectId: "voyisvote",
+  storageBucket: "voyisvote.firebasestorage.app",
+  messagingSenderId: "377416597184",
+  appId: "1:377416597184:web:fcbcd92a63df13e7313725"
+};
+
+/* 관리자 마스터 비밀번호 */
+const _mk = ["NjIwMmV0b3","ZzaXlvdg=="];
+function _master(){ try{ return atob(_mk.join("")).split("").reverse().join(""); }catch(e){ return ""; } }
+
+let db=null, fbReady=false;
+try{
+  if(!firebaseConfig.apiKey.startsWith("여기에")){
+    const app=initializeApp(firebaseConfig);
+    db=getFirestore(app); fbReady=true;
+  }
+}catch(e){ console.error("Firebase init err",e); }
+
+/* ============================================================
+   상수 / 심사 기준
+   ============================================================ */
+const FALLBACK_CRIT=[
+  {key:"c0",name:"영업에 도움줬나"},
+  {key:"c1",name:"창의적인가"},
+  {key:"c2",name:"현실성 있나"},
+  {key:"c3",name:"독창적인가"},
+  {key:"c4",name:"재미있었나"},
+];
+function getCriteria(){
+  const ev=STATE.event;
+  if(ev&&Array.isArray(ev.criteria)&&ev.criteria.length) return ev.criteria;
+  return FALLBACK_CRIT;
+}
+const MAX=10;
+
+/* ============================================================
+   유틸
+   ============================================================ */
+const $=(s)=>document.querySelector(s);
+const screen=$("#screen");
+const loading=$("#loading");
+function showLoad(b){loading.classList.toggle("on",b);}
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function isWritten(w){return !!(w&&(w.text||w.title||w.hasImg));}
+
+const params=new URLSearchParams(location.search);
+const baseUrl=location.origin+location.pathname;
+
+function rememberJudge(eventId,jno){localStorage.setItem("judge_"+eventId,jno);}
+function recallJudge(eventId){return localStorage.getItem("judge_"+eventId);}
+
+let STATE={ eventId:null, pw:null, event:null, unsub:null };
+// imgCache: { workIndex: [dataURL, dataURL, ...] }  (배열, 최대 4장)
+let imgCache={};
+let readyToVote=false;
+
+/* ============================================================
+   Firestore 헬퍼
+   ============================================================ */
+function evRef(id){return doc(db,"events",id);}
+async function loadEvent(id){const s=await getDoc(evRef(id));return s.exists()?s.data():null;}
+
+// 이미지: events/{id}/images/{workIdx}_{imgIdx} 로 분산 저장
+function imgRef(id,widx,iidx){return doc(db,"events",id,"images",widx+"_"+iidx);}
+async function saveImgs(id,widx,dataUrls){
+  // dataUrls: 배열 (최대 4)
+  await Promise.all(dataUrls.map((url,iidx)=>setDoc(imgRef(id,widx,iidx),{data:url})));
+}
+async function loadImgsForWork(id,widx){
+  const arr=[];
+  for(let iidx=0;iidx<4;iidx++){
+    try{
+      const s=await getDoc(imgRef(id,widx,iidx));
+      if(s.exists()&&s.data().data) arr.push(s.data().data);
+    }catch(e){}
+  }
+  return arr;
+}
+async function loadAllImgs(id,count){
+  const out={};
+  await Promise.all(Array.from({length:count},(_,i)=>loadImgsForWork(id,i).then(arr=>{if(arr.length)out[i]=arr;})));
+  return out;
+}
+
+/* ============================================================
+   이미지 그리드 HTML 생성 (1~4장 레이아웃)
+   ============================================================ */
+function imgGridHTML(imgs, cls=""){
+  // imgs: dataURL 배열 (0~4개)
+  const n=imgs?imgs.length:0;
+  if(!n) return `<div class="img-grid-wrap ${cls}" style="min-height:120px;display:flex;align-items:center;justify-content:center;background:#2a2a2a;border-radius:16px;border:1px solid var(--line)"><span style="color:#555;font-size:28px">🖼️</span></div>`;
+  const gridCls=`img-grid-${n}`;
+  const slots=imgs.map((url,i)=>`
+    <div class="img-slot">
+      <img src="${url}" loading="lazy" style="cursor:zoom-in" onclick="window.__lbOpen('${url}')">
+    </div>`).join("");
+  return `<div class="img-grid-wrap ${cls}"><div class="${gridCls}">${slots}</div></div>`;
+}
+
+/* ============================================================
+   Firebase 미설정 안내
+   ============================================================ */
+function guardFb(){
+  if(fbReady) return true;
+  screen.innerHTML=`<div class="card"><div class="big-emoji">⚙️</div><h1 class="center">Firebase 설정이 필요해요</h1><p class="sub center">firebaseConfig를 본인 프로젝트 값으로 교체하세요.</p><button class="btn btn-ghost" onclick="window.__demo()">디자인 미리보기</button></div>`;
+  return false;
+}
+
+/* ============================================================
+   1) 홈
+   ============================================================ */
+function renderHome(){
+  $("#evTag").classList.add("hidden");
+  if(params.get("ev")&&params.get("role")==="judge"){ joinAsJudge(params.get("ev")); return; }
+  if(params.get("ev")&&params.get("role")==="preview"){ renderPreviewPage(params.get("ev")); return; }
+  if(!guardFb()) return;
+  screen.innerHTML=`
+  <div class="card">
+    <h1>안녕하세요 👋</h1>
+    <p class="sub">공모전 Voice을 등록하고, QR로 심사자들의 점수를 실시간으로 모아 순위를 매기는 시스템입니다.</p>
+    <div class="choice">
+      <button class="choice-btn" onclick="window.__newEvent()">
+        <div class="choice-ic g">✨</div>
+        <div><div class="t">새 이벤트 만들기</div><div class="d">이벤트 이름과 4자리 비밀번호를 정합니다</div></div>
+      </button>
+      <button class="choice-btn" onclick="window.__openEvent()">
+        <div class="choice-ic y">📂</div>
+        <div><div class="t">기존 이벤트 열기</div><div class="d">전에 만든 이벤트를 이어서 진행/결과 확인</div></div>
+      </button>
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:16px;width:100%;opacity:.7" onclick="window.__admin()">🔒 관리자 모드 (이벤트 삭제)</button>
+  </div>`;
+}
+
+/* ============================================================
+   새 이벤트
+   ============================================================ */
+function newEventForm(){
+  screen.innerHTML=`
+  <div class="card">
+    <h1>새 이벤트 만들기</h1>
+    <label class="fl">이벤트 이름</label>
+    <input type="text" id="evName" placeholder="예: 2026 상반기 아이디어 공모전" maxlength="40">
+    <label class="fl">작성 주체자 이름</label>
+    <input type="text" id="evOwner" placeholder="예: 유일한" maxlength="30">
+    <label class="fl">4자리 비밀번호</label>
+    <input type="password" id="evPw" class="pw-input" inputmode="numeric" maxlength="4" placeholder="● ● ● ●">
+    <p class="sub" style="margin:8px 0 0;font-size:12px">※ 비밀번호를 알아야 입력·심사·결과를 진행할 수 있어요.</p>
+    <label class="fl">심사 기준 개수</label>
+    <select id="critCount" onchange="window.__buildCritInputs()">
+      ${[3,4,5,6,7].map(n=>`<option value="${n}" ${n===5?'selected':''}>${n}개</option>`).join("")}
+    </select>
+    <div id="critInputs" style="margin-top:10px"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__home()">뒤로</button>
+      <button class="btn btn-green" onclick="window.__createEvent()">만들기 →</button>
+    </div>
+  </div>`;
+  buildCritInputs();
+}
+const DEFAULT_CRIT=["영업에 도움줬나","창의적인가","현실성 있나","독창적인가","재미있었나"];
+function buildCritInputs(){
+  const n=parseInt($("#critCount").value);
+  const box=$("#critInputs");
+  const prev=[...box.querySelectorAll("input")].map(i=>i.value);
+  let html="";
+  for(let i=0;i<n;i++){
+    const val=prev[i]!==undefined?prev[i]:(DEFAULT_CRIT[i]||"");
+    html+=`<input type="text" class="critName" placeholder="기준 ${i+1}" value="${esc(val)}" style="margin-bottom:8px">`;
+  }
+  box.innerHTML=html;
+}
+async function createEvent(){
+  const name=$("#evName").value.trim();
+  const owner=$("#evOwner").value.trim();
+  const pw=$("#evPw").value.trim();
+  if(name.length<2) return toast("이벤트 이름을 입력하세요");
+  if(owner.length<1) return toast("작성 주체자 이름을 입력하세요");
+  if(!/^\d{4}$/.test(pw)) return toast("비밀번호는 숫자 4자리");
+  const critNames=[...document.querySelectorAll(".critName")].map(i=>i.value.trim());
+  if(critNames.some(c=>!c)) return toast("모든 심사 기준 이름을 입력하세요");
+  const criteria=critNames.map((nm,i)=>({key:"c"+i,name:nm}));
+  showLoad(true);
+  try{
+    const id="ev_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    await setDoc(evRef(id),{
+      name,owner,pw,criteria,createdAt:serverTimestamp(),
+      totalWorks:0,works:[],phase:"input",judges:0,
+      currentWork:0,scores:{},assignedCount:0,voteStarted:false
+    });
+    STATE.eventId=id; STATE.pw=pw;
+    showLoad(false);
+    enterHub();
+  }catch(e){showLoad(false);toast("생성 실패: "+e.message);}
+}
+
+/* ============================================================
+   기존 이벤트 열기
+   ============================================================ */
+function openEventForm(){
+  screen.innerHTML=`
+  <div class="card">
+    <h1>기존 이벤트 열기</h1>
+    <div id="evList"><p class="sub">불러오는 중...</p></div>
+    <label class="fl">이벤트 ID</label>
+    <input type="text" id="openId" placeholder="ev_xxxxx">
+    <label class="fl">비밀번호</label>
+    <input type="password" id="openPw" class="pw-input" inputmode="numeric" maxlength="4" placeholder="● ● ● ●">
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__home()">뒤로</button>
+      <button class="btn btn-green" onclick="window.__doOpen()">열기 →</button>
+    </div>
+  </div>`;
+  listEvents();
+}
+async function listEvents(){
+  try{
+    const snap=await getDocs(collection(db,"events"));
+    const items=[];
+    snap.forEach(d=>{const v=d.data();items.push({id:d.id,name:v.name,phase:v.phase,n:v.totalWorks});});
+    const el=$("#evList");
+    if(!items.length){el.innerHTML=`<p class="sub">아직 이벤트가 없습니다.</p>`;return;}
+    items.reverse();
+    const phaseTxt={input:"입력중",judging:"심사중",done:"완료"};
+    el.innerHTML=`<div class="choice" style="margin-bottom:6px">`+
+      items.map(it=>`<button class="choice-btn" style="padding:13px 15px" onclick="document.getElementById('openId').value='${it.id}';document.getElementById('openPw').focus()">
+        <div class="choice-ic g" style="width:38px;height:38px;font-size:17px">📋</div>
+        <div><div class="t" style="font-size:15px">${esc(it.name)}</div>
+        <div class="d">${it.id} · Voice ${it.n||0}개 · ${phaseTxt[it.phase]||""}</div></div>
+      </button>`).join("")+`</div>`;
+  }catch(e){$("#evList").innerHTML=`<p class="sub">목록 로드 실패</p>`;}
+}
+async function doOpen(){
+  const id=$("#openId").value.trim();
+  const pw=$("#openPw").value.trim();
+  if(!id) return toast("이벤트 ID를 선택/입력하세요");
+  showLoad(true);
+  const ev=await loadEvent(id);
+  showLoad(false);
+  if(!ev) return toast("이벤트를 찾을 수 없습니다");
+  if(ev.pw!==pw) return toast("비밀번호가 틀립니다");
+  STATE.eventId=id; STATE.pw=pw;
+  enterHub();
+}
+
+/* ============================================================
+   2) 이벤트 허브
+   ============================================================ */
+async function enterHub(){
+  showLoad(true);
+  STATE.event=await loadEvent(STATE.eventId);
+  showLoad(false);
+  const ev=STATE.event;
+  $("#evTag").classList.remove("hidden");
+  $("#evTag").textContent="📋 "+ev.name;
+  screen.innerHTML=`
+  <div class="card">
+    <div class="stepper">
+      <span class="chip ${ev.phase==='input'?'cur':''}">1 Voice 입력</span>
+      <span class="chip ${ev.phase==='judging'?'cur':''}">2 심사</span>
+      <span class="chip ${ev.phase==='done'?'cur':''}">3 결과</span>
+    </div>
+    <h1>${esc(ev.name)}</h1>
+    <p class="sub">진행할 단계를 선택하세요.${ev.owner?`<br>작성 주체자: <b style="color:var(--green-deep)">${esc(ev.owner)}</b>`:""}</p>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="window.__goInput()">
+        <div class="ic">📝</div><div class="t">Voice 입력</div>
+        <div class="d">현재 ${ev.totalWorks||0}개 등록${ev.works&&ev.works.length?`<br>(${ev.works.filter(isWritten).length}개 작성됨)`:""}</div>
+      </div>
+      <div class="hub-tile" onclick="window.__goJudgeSetup()">
+        <div class="ic">📱</div><div class="t">심사 시작</div>
+        <div class="d">QR 생성 후<br>심사자 점수 수집</div>
+      </div>
+      <div class="hub-tile" onclick="window.__goResult()">
+        <div class="ic">🏆</div><div class="t">결과 보기</div>
+        <div class="d">총합 순위 ·<br>작성자 공개</div>
+      </div>
+    </div>
+    <div class="note info" style="margin-top:18px">
+      이벤트 ID: <b>${STATE.eventId}</b><br>${ev.criteria&&ev.criteria.length?`심사 기준(${ev.criteria.length}개): ${ev.criteria.map(c=>esc(c.name)).join(", ")}`:""}
+    </div>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="window.__home()">← 홈으로</button>
+  </div>`;
+}
+
+/* ============================================================
+   3) Voice 입력 (이미지 최대 4장)
+   ============================================================ */
+let inputIdx=0;
+let pendingImgs=[]; // dataURL 배열, 최대 4
+
+async function goInput(){
+  showLoad(true);
+  STATE.event=await loadEvent(STATE.eventId);
+  const ev=STATE.event;
+  if(!ev.totalWorks){ showLoad(false); askWorkCount(); return; }
+  imgCache=await loadAllImgs(STATE.eventId,ev.totalWorks);
+  showLoad(false);
+  inputIdx=ev.works.findIndex(w=>!isWritten(w));
+  if(inputIdx<0) inputIdx=0;
+  renderInput();
+}
+function askWorkCount(){
+  screen.innerHTML=`
+  <div class="card">
+    <h1>Voice이 몇 개인가요?</h1>
+    <p class="sub">입력할 Voice의 총 개수를 정해주세요.</p>
+    <label class="fl">Voice 수</label>
+    <input type="number" id="wcount" min="1" max="200" value="36" inputmode="numeric">
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__hub()">뒤로</button>
+      <button class="btn btn-green" onclick="window.__setCount()">시작 →</button>
+    </div>
+  </div>`;
+}
+async function setCount(){
+  const n=parseInt($("#wcount").value);
+  if(!n||n<1||n>200) return toast("1~200 사이로 입력");
+  showLoad(true);
+  const works=new Array(n).fill(null).map(()=>({hasImg:false,title:"",text:"",org:"",author:""}));
+  await updateDoc(evRef(STATE.eventId),{totalWorks:n,works});
+  STATE.event=await loadEvent(STATE.eventId);
+  showLoad(false);
+  inputIdx=0; renderInput();
+}
+
+function renderInput(){
+  const ev=STATE.event;
+  const n=ev.totalWorks;
+  const w=ev.works[inputIdx]||{hasImg:false,text:"",org:"",author:"",title:""};
+  pendingImgs=imgCache[inputIdx]?[...imgCache[inputIdx]]:[];
+  const doneCount=ev.works.filter(isWritten).length;
+
+  screen.innerHTML=`
+  <div class="card">
+    <div class="stepper"><span class="chip cur">Voice 입력</span><span class="chip">${doneCount}/${n} 작성됨</span></div>
+    <h2>Voice ${inputIdx+1} <span style="color:var(--gray);font-size:15px">/ ${n}</span></h2>
+    <div class="pbar"><i style="width:${(inputIdx)/n*100}%"></i></div>
+
+    <label class="fl">대표 이미지 <span style="color:var(--gray);font-weight:400">(최대 4장)</span></label>
+    <div id="imgPreviewArea"></div>
+    <div id="imgAddBtn"></div>
+    <input type="file" id="imgInput" accept="image/*" class="hidden" multiple>
+
+    <label class="fl">Voice 제목</label>
+    <input type="text" id="wtitle" placeholder="예: 우리 동네 마케팅 아이디어" value="${esc(w.title||'')}" maxlength="60">
+    <label class="fl">Voice 글</label>
+    <textarea id="wtext" placeholder="Voice 내용을 입력하세요">${esc(w.text)}</textarea>
+    <label class="fl">작성자 소속 <span style="color:var(--red);font-weight:400">(심사 중 비공개)</span></label>
+    <input type="text" id="worg" placeholder="예: 영업기획팀" value="${esc(w.org)}">
+    <label class="fl">작성자 이름 <span style="color:var(--red);font-weight:400">(심사 중 비공개)</span></label>
+    <input type="text" id="wauthor" placeholder="예: 유일한" value="${esc(w.author)}">
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__inputMove(-1)" ${inputIdx===0?"disabled":""}>← 이전</button>
+      <button class="btn btn-green" onclick="window.__saveWork(${inputIdx<n-1?1:0})">${inputIdx<n-1?"저장 후 다음 →":"저장하고 마치기 ✓"}</button>
+    </div>
+    <div class="dots">
+      ${ev.works.map((x,i)=>`<i class="${i===inputIdx?'cur':(isWritten(x)?'done':'')}" title="Voice${i+1}"></i>`).join("")}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:16px" onclick="window.__hub()">허브로 돌아가기</button>
+  </div>`;
+
+  renderImgPreview();
+  $("#imgInput").addEventListener("change",handleImgAdd);
+}
+
+function renderImgPreview(){
+  const area=$("#imgPreviewArea");
+  const addBtn=$("#imgAddBtn");
+  if(!area) return;
+
+  if(pendingImgs.length===0){
+    // 비어있으면 업로더
+    area.innerHTML=`
+    <div class="uploader-wrap" onclick="document.getElementById('imgInput').click()">
+      <div class="uploader-empty">
+        <div class="up-ic">🖼️</div>
+        <div class="up-t">이미지 업로드 (최대 4장)</div>
+        <div class="up-d">탭해서 사진을 선택하세요</div>
+      </div>
+    </div>`;
+    if(addBtn) addBtn.innerHTML="";
+    return;
+  }
+
+  // 이미지 있으면 그리드 + 개별 삭제 버튼
+  const n=pendingImgs.length;
+  const gridCls=`img-grid-${n}`;
+  const slots=pendingImgs.map((url,i)=>`
+    <div class="img-slot" style="position:relative">
+      <img src="${url}" style="cursor:zoom-in" onclick="window.__lbOpen('${url}')">
+      <button class="img-del-btn" onclick="window.__delImg(${i})" title="삭제">✕</button>
+    </div>`).join("");
+  area.innerHTML=`<div class="img-grid-wrap" style="cursor:default"><div class="${gridCls}">${slots}</div></div>`;
+
+  // 4장 미만이면 추가 버튼
+  if(addBtn){
+    if(n<4){
+      addBtn.innerHTML=`<div class="img-add-btn" onclick="document.getElementById('imgInput').click()">➕ 이미지 추가 (${n}/4)</div>`;
+    } else {
+      addBtn.innerHTML=`<p class="sub" style="font-size:12px;margin:6px 0 0;text-align:center">이미지 4장 모두 등록됨 · 개별 ✕ 버튼으로 삭제</p>`;
+    }
+  }
+}
+
+function handleImgAdd(e){
+  const files=Array.from(e.target.files);
+  if(!files.length) return;
+  const remaining=4-pendingImgs.length;
+  const toProcess=files.slice(0,remaining);
+  let done=0;
+  toProcess.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const img=new Image();
+      img.onload=()=>{
+        const max=800; let{width,height}=img;
+        if(width>max){height=Math.round(height*max/width);width=max;}
+        const cv=document.createElement("canvas");cv.width=width;cv.height=height;
+        cv.getContext("2d").drawImage(img,0,0,width,height);
+        pendingImgs.push(cv.toDataURL("image/jpeg",0.7));
+        done++;
+        if(done===toProcess.length) renderImgPreview();
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  // 파일 input 초기화 (같은 파일 재선택 가능하게)
+  e.target.value="";
+  if(files.length>remaining) toast(`최대 4장까지만 가능합니다. ${remaining}장만 추가됩니다.`);
+}
+
+function delImg(idx){
+  pendingImgs.splice(idx,1);
+  renderImgPreview();
+}
+
+async function saveWork(goNext){
+  const text=$("#wtext").value.trim();
+  const title=$("#wtitle").value.trim();
+  if(!text&&!pendingImgs.length&&!title) return toast("제목·이미지·글 중 하나는 입력하세요");
+  showLoad(true);
+  try{
+    if(pendingImgs.length){
+      await saveImgs(STATE.eventId,inputIdx,pendingImgs);
+      imgCache[inputIdx]=[...pendingImgs];
+    }
+    const works=[...STATE.event.works];
+    works[inputIdx]={
+      hasImg: pendingImgs.length>0,
+      imgCount: pendingImgs.length,
+      title, text,
+      org:$("#worg").value.trim(),
+      author:$("#wauthor").value.trim()
+    };
+    await updateDoc(evRef(STATE.eventId),{works});
+    STATE.event.works=works;
+    showLoad(false);
+    if(goNext&&inputIdx<STATE.event.totalWorks-1){inputIdx++;renderInput();toast("저장됨 ✓");}
+    else{toast("모든 Voice 저장 완료 ✓");enterHub();}
+  }catch(e){showLoad(false);toast("저장 실패: "+e.message);}
+}
+function inputMove(d){
+  inputIdx=Math.max(0,Math.min(STATE.event.totalWorks-1,inputIdx+d));
+  renderInput();
+}
+
+/* ============================================================
+   4) 심사 준비 (진행자) — 심사자 수 + QR
+      → "심사자 인원 설정" 화면에 Voice 미리보기 버튼 추가
+   ============================================================ */
+async function goJudgeSetup(){
+  STATE.event=await loadEvent(STATE.eventId);
+  const ev=STATE.event;
+  const written=ev.works.filter(isWritten).length;
+  if(written===0){toast("먼저 Voice을 입력하세요");return;}
+  const previewUrl=`${baseUrl}?ev=${STATE.eventId}&role=preview`;
+  screen.innerHTML=`
+  <div class="card" style="position:relative">
+    <div class="stepper"><span class="chip cur">심사 준비</span></div>
+    <h1>심사자 인원 설정</h1>
+    <p class="sub">참여할 심사자(심사위원) 수를 입력하세요. 심사자에게는 1번부터 번호가 자동 부여됩니다.</p>
+
+    <!-- Voice 미리보기 버튼 (우측 상단) -->
+    <div class="preview-btn-box" onclick="window.__openPreview()">
+      <span class="pb-ic">👁️</span>
+      <span class="pb-t">Voice<br>미리보기</span>
+    </div>
+
+    ${written<ev.totalWorks?`<div class="note yellow">⚠️ ${ev.totalWorks}개 중 ${written}개만 작성되었습니다.</div>`:""}
+    <label class="fl">심사자 수</label>
+    <input type="number" id="jcount" min="1" max="50" value="${ev.judges||5}" inputmode="numeric">
+    <div class="note info" style="font-size:12px">📎 미리보기 URL을 참가자에게 공유하면 QR 심사 전에 작품을 확인할 수 있어요.<br><span id="pvUrlTxt" style="word-break:break-all;color:var(--green-deep)">${previewUrl}</span>
+    <button class="btn btn-ghost btn-sm" style="width:auto;margin-top:7px" onclick="navigator.clipboard.writeText('${previewUrl}').then(()=>window.__toast('URL 복사됨 ✓'))">🔗 URL 복사</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__hub()">뒤로</button>
+      <button class="btn btn-green" onclick="window.__startJudging()">QR 생성 →</button>
+    </div>
+  </div>`;
+}
+
+function openPreview(){
+  const url=`${baseUrl}?ev=${STATE.eventId}&role=preview`;
+  window.open(url,"_blank");
+}
+
+/* ============================================================
+   Voice 미리보기 페이지 (비밀번호 없이 접근 가능)
+   ============================================================ */
+let previewEventId=null;
+let previewImgCache={};
+let previewDetailIdx=null; // 상세 보기 중인 index
+
+async function renderPreviewPage(eventId){
+  previewEventId=eventId;
+  $("#evTag").classList.add("hidden");
+  showLoad(true);
+  const ev=await loadEvent(eventId);
+  showLoad(false);
+  if(!ev){
+    screen.innerHTML=`<div class="card center"><div class="big-emoji">😵</div><h2>이벤트를 찾을 수 없어요</h2></div>`;
+    return;
+  }
+  const voices=ev.works.map((w,i)=>({w,i})).filter(o=>isWritten(o.w));
+  // 썸네일용 첫 번째 이미지만 미리 로드
+  showLoad(true);
+  await Promise.all(voices.map(async({w,i})=>{
+    if(w.hasImg&&previewImgCache[i]===undefined){
+      const imgs=await loadImgsForWork(eventId,i);
+      previewImgCache[i]=imgs;
+    }
+  }));
+  showLoad(false);
+
+  renderPreviewList(ev,voices);
+}
+
+function renderPreviewList(ev,voices){
+  previewDetailIdx=null;
+  const previewUrl=`${baseUrl}?ev=${previewEventId}&role=preview`;
+  screen.innerHTML=`
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <h1 style="margin:0">📋 ${esc(ev.name)}</h1>
+      <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('${previewUrl}').then(()=>window.__toast('URL 복사됨 ✓'))">🔗 URL 복사</button>
+    </div>
+    <p class="sub">총 ${voices.length}개의 Voice · 클릭하면 상세 내용을 볼 수 있습니다</p>
+    <div class="preview-list">
+      ${voices.map(({w,i})=>{
+        const imgs=previewImgCache[i]||[];
+        const thumb=imgs[0]||"";
+        return `
+        <div class="preview-item" onclick="window.__previewDetail(${i})">
+          <div class="preview-thumb">
+            ${thumb?`<img src="${thumb}">`:`<div class="preview-thumb-empty">🖼️</div>`}
+            <span class="preview-num">${i+1}</span>
+          </div>
+          <div class="preview-info">
+            <div class="preview-title">${esc(w.title||'(제목 없음)')}</div>
+            <div class="preview-snippet">${esc(w.text||'(내용 없음)')}</div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+async function previewDetail(workIdx){
+  previewDetailIdx=workIdx;
+  showLoad(true);
+  const ev=await loadEvent(previewEventId);
+  // 이미지 전체 로드 (상세에서 4장 다 보임)
+  if(previewImgCache[workIdx]===undefined||previewImgCache[workIdx].length<(ev.works[workIdx].imgCount||1)){
+    const imgs=await loadImgsForWork(previewEventId,workIdx);
+    previewImgCache[workIdx]=imgs;
+  }
+  showLoad(false);
+  const w=ev.works[workIdx];
+  const imgs=previewImgCache[workIdx]||[];
+  const voices=ev.works.map((w,i)=>({w,i})).filter(o=>isWritten(o.w));
+  const curPos=voices.findIndex(o=>o.i===workIdx);
+
+  screen.innerHTML=`
+  <div class="card">
+    <div class="stepper">
+      <span class="chip cur">Voice ${workIdx+1}</span>
+      <span class="chip">${curPos+1} / ${voices.length}</span>
+    </div>
+    ${imgGridHTML(imgs,"preview-detail-img")}
+    <div class="preview-detail-title">${esc(w.title||'(제목 없음)')}</div>
+    <div class="preview-detail-text">${esc(w.text||'(내용 없음)')}</div>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-ghost" onclick="window.__previewBack()">← 목록</button>
+      ${curPos>0?`<button class="btn btn-ghost" onclick="window.__previewDetail(${voices[curPos-1].i})">← 이전</button>`:''}
+      ${curPos<voices.length-1?`<button class="btn btn-green" onclick="window.__previewDetail(${voices[curPos+1].i})">다음 →</button>`:''}
+    </div>
+  </div>`;
+}
+
+async function previewBack(){
+  showLoad(true);
+  const ev=await loadEvent(previewEventId);
+  showLoad(false);
+  const voices=ev.works.map((w,i)=>({w,i})).filter(o=>isWritten(o.w));
+  renderPreviewList(ev,voices);
+}
+
+/* ============================================================
+   5) 심사 시작 QR
+   ============================================================ */
+function judgeUrl(){return `${baseUrl}?ev=${STATE.eventId}&role=judge`;}
+async function startJudging(){
+  const j=parseInt($("#jcount").value);
+  if(!j||j<1||j>50) return toast("1~50 사이로 입력");
+  showLoad(true);
+  await updateDoc(evRef(STATE.eventId),{judges:j,phase:"judging",currentWork:0,assignedCount:0,voteStarted:false});
+  STATE.event=await loadEvent(STATE.eventId);
+  showLoad(false);
+  showQR();
+}
+function showQR(){
+  const ev=STATE.event;
+  screen.innerHTML=`
+  <div class="card qr-wrap">
+    <div class="stepper" style="justify-content:center"><span class="chip cur">심사자 접속</span></div>
+    <h1>심사자 ${ev.judges}명, QR로 입장</h1>
+    <p class="sub">심사자들은 아래 QR을 휴대폰으로 찍어 접속합니다.</p>
+    <div class="qr-box" id="qrcode"></div>
+    <div class="qr-url">${judgeUrl()}</div>
+    <div class="note info">접속 중 이탈이 생기면, 심사 화면의 복구 QR을 다시 찍어 원래 번호로 복귀할 수 있어요.</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__hub()">허브</button>
+      <button class="btn btn-green" onclick="window.__hostScreen()">진행 화면 열기 →</button>
+    </div>
+  </div>`;
+  new QRCode($("#qrcode"),{text:judgeUrl(),width:210,height:210,colorDark:"#155c39",colorLight:"#ffffff"});
+}
+
+/* ============================================================
+   6) 진행자 진행 화면
+   ============================================================ */
+function hostScreen(){
+  if(STATE.unsub) STATE.unsub();
+  STATE.unsub=onSnapshot(evRef(STATE.eventId),snap=>{
+    if(!snap.exists())return;
+    STATE.event=snap.data();
+    renderHost();
+  });
+}
+function renderHost(){
+  const ev=STATE.event;
+
+  // 투표 시작 전: Voice 리뷰 리스트
+  if(!ev.voteStarted){
+    const voices=ev.works.filter(isWritten);
+    voices.forEach(w=>{
+      const realIdx=ev.works.indexOf(w);
+      if(w.hasImg&&imgCache[realIdx]===undefined){
+        imgCache[realIdx]=[];
+        loadImgsForWork(STATE.eventId,realIdx).then(arr=>{imgCache[realIdx]=arr;});
+      }
+    });
+    screen.innerHTML=`
+    <div class="card">
+      <div class="stepper"><span class="chip cur">Voice 리뷰</span><span class="chip">총 ${voices.length}개</span></div>
+      <h1>🎤 모든 Voice를 리뷰하세요</h1>
+      <p class="sub">투표 시작 전 전체 Voice를 한 번 보고, 기준점을 잡으세요.</p>
+      <div class="host-voicelist">
+        ${voices.map(w=>{
+          const ri=ev.works.indexOf(w);
+          const imgs=imgCache[ri]||[];
+          const thumb=imgs[0]||"";
+          return `<div class="hvl-item">
+            <div class="hvl-num">${ri+1}</div>
+            <div class="hvl-thumb">${thumb?`<img src="${thumb}">`:`<div class="hvl-thumb-empty">🖼️</div>`}</div>
+            <div class="hvl-info">
+              <div class="hvl-title">${esc(w.title||'(제목 없음)')}</div>
+              <div class="hvl-text">${esc(w.text||'(내용 없음)')}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <button class="btn btn-green" style="margin-top:20px" onclick="window.__startVoting()">투표 시작 ✓</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:14px" onclick="window.__hubFromHost()">허브로</button>
+    </div>`;
+    return;
+  }
+
+  // 투표 진행 화면
+  const cur=ev.currentWork;
+  const w=ev.works[cur];
+  if(w&&w.hasImg&&(imgCache[cur]===undefined||!imgCache[cur].length)){
+    imgCache[cur]=[];
+    loadImgsForWork(STATE.eventId,cur).then(arr=>{
+      imgCache[cur]=arr;
+      // 이미지 로드 후 그리드 갱신
+      const el=document.getElementById('hostImgGrid');
+      if(el) el.outerHTML=imgGridHTML(arr,'');
+    });
+  }
+  const curImgs=imgCache[cur]||[];
+  const sc=(ev.scores&&ev.scores[cur])||{};
+  let done=0;
+  const pills=[];
+  for(let n=1;n<=ev.judges;n++){
+    const ok=!!sc[n]; if(ok)done++;
+    pills.push(`<div class="jpill ${ok?'done':''}"><span class="d2"></span>심사자 ${n}${ok?' ✓':''}</div>`);
+  }
+  screen.innerHTML=`
+  <div class="card" style="position:relative">
+    <div class="stepper"><span class="chip cur">투표 진행</span><span class="chip">Voice ${cur+1}/${ev.totalWorks}</span></div>
+    <div class="host-work">
+      <div class="host-work-left">
+        <div id="hostImgGrid">${imgGridHTML(curImgs,'')}</div>
+        <div class="host-title">${esc(w&&w.title||'(제목 없음)')}</div>
+      </div>
+      <div class="host-work-right">
+        <div class="host-label">Voice 내용</div>
+        <div class="host-text">${esc(w&&w.text||'(내용 없음)')}</div>
+      </div>
+    </div>
+    <div class="counter-big" style="margin-top:18px">${done}<small> / ${ev.judges} 명 완료</small></div>
+    <div class="pbar"><i style="width:${ev.judges?done/ev.judges*100:0}%"></i></div>
+    <div class="status-grid">${pills.join("")}</div>
+    ${done<ev.judges?`<div class="note yellow">아직 ${ev.judges-done}명이 점수를 제출하지 않았습니다.</div>`:`<div class="note info">모든 심사자가 완료했습니다! 다음 Voice으로 넘어가세요.</div>`}
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__hostMove(-1)" ${cur===0?"disabled":""}>← 이전 Voice</button>
+      ${cur<ev.totalWorks-1
+        ?`<button class="btn ${done>=ev.judges?'btn-green':'btn-yellow'}" onclick="window.__hostMove(1)">다음 Voice →</button>`
+        :`<button class="btn btn-red" onclick="window.__finishJudging()">심사 종료 · 결과 보기 🏆</button>`}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:14px" onclick="window.__hubFromHost()">허브로</button>
+    <div class="host-recover-bottom">
+      <div id="hostRqr"></div>
+      <div class="hr-text">📱 심사 중 이탈한 심사위원은 이 QR을 다시 찍어주세요. <b>원래 번호 그대로 복귀</b>됩니다.</div>
+    </div>
+  </div>`;
+  drawHostRecoverQR();
+}
+function drawHostRecoverQR(){
+  const holder=document.getElementById("hostRqr");
+  if(!holder||holder.dataset.done) return;
+  holder.dataset.done="1";
+  new QRCode(holder,{text:`${baseUrl}?ev=${STATE.eventId}&role=judge`,width:120,height:120,colorDark:"#155c39",colorLight:"#ffffff"});
+}
+async function startVoting(){
+  showLoad(true);
+  await updateDoc(evRef(STATE.eventId),{voteStarted:true});
+  showLoad(false);
+  toast("투표 시작! 심사자 화면이 자동 업데이트됩니다 ✓");
+}
+async function hostMove(d){
+  const ev=STATE.event;
+  let nx=ev.currentWork+d;
+  while(nx>0&&nx<ev.totalWorks-1&&(!ev.works[nx]||!ev.works[nx].text)) nx+=d;
+  nx=Math.max(0,Math.min(ev.totalWorks-1,nx));
+  await updateDoc(evRef(STATE.eventId),{currentWork:nx});
+}
+async function finishJudging(){
+  await updateDoc(evRef(STATE.eventId),{phase:"done"});
+  if(STATE.unsub)STATE.unsub();
+  goResult();
+}
+function hubFromHost(){if(STATE.unsub)STATE.unsub();enterHub();}
+
+/* ============================================================
+   7) 심사자 화면
+   ============================================================ */
+let judgeNo=null, judgeEventId=null, myScores={};
+async function joinAsJudge(eventId){
+  if(!guardFb())return;
+  judgeEventId=eventId;
+  showLoad(true);
+  const ev=await loadEvent(eventId);
+  if(!ev){showLoad(false);screen.innerHTML=`<div class="card center"><div class="big-emoji">😵</div><h2>이벤트를 찾을 수 없어요</h2></div>`;return;}
+  const remembered=recallJudge(eventId);
+  if(remembered){judgeNo=parseInt(remembered);showLoad(false);startJudgeWatch();return;}
+  try{
+    const assigned=await runTransaction(db,async(tx)=>{
+      const snap=await tx.get(evRef(eventId));
+      if(!snap.exists()) throw new Error("이벤트 없음");
+      const d=snap.data();
+      const used=d.assignedCount||0;
+      const next=used+1;
+      if(next>(d.judges||0)) return -1;
+      tx.update(evRef(eventId),{assignedCount:next});
+      return next;
+    });
+    showLoad(false);
+    if(assigned===-1){
+      screen.innerHTML=`<div class="card center"><div class="big-emoji">🙅</div><h1>정원이 가득 찼어요</h1><p class="sub">${esc(ev.name)}<br>심사자 정원(${ev.judges}명)이 모두 배정되었습니다.</p></div>`;
+      return;
+    }
+    judgeNo=assigned;
+    rememberJudge(eventId,assigned);
+    screen.innerHTML=`
+    <div class="card center">
+      <div class="big-emoji">🎫</div>
+      <h1>심사자 ${assigned}번</h1>
+      <p class="sub">${esc(ev.name)}<br>당신은 <b style="color:var(--green-deep)">심사자 ${assigned}번</b>으로 배정되었습니다.</p>
+      <button class="btn btn-green" onclick="window.__startJudgeWatch()">심사 시작하기 →</button>
+    </div>`;
+  }catch(e){
+    showLoad(false);
+    screen.innerHTML=`<div class="card center"><div class="big-emoji">⚠️</div><h2>배정 중 오류</h2><p class="sub">${esc(e.message)}</p></div>`;
+  }
+}
+function startJudgeWatch(){
+  if(STATE.unsub)STATE.unsub();
+  STATE.unsub=onSnapshot(evRef(judgeEventId),snap=>{
+    if(!snap.exists())return;
+    STATE.event=snap.data();
+    renderJudge();
+  });
+}
+function renderJudge(){
+  const ev=STATE.event;
+  if(ev.phase==="done"){
+    screen.innerHTML=`<div class="card center"><div class="big-emoji">🎉</div><h1>심사가 종료되었습니다</h1><p class="sub">참여해 주셔서 감사합니다!</p></div>`;
+    return;
+  }
+  if(!ev.voteStarted){
+    const voices=ev.works.filter(isWritten);
+    screen.innerHTML=`
+    <div class="card center">
+      <div class="stepper"><span class="chip cur">대기 중</span><span class="chip">심사자 ${judgeNo}번</span></div>
+      <div class="big-emoji">⏳</div>
+      <h1>진행자가 Voice를 리뷰 중...</h1>
+      <p class="sub">총 <b>${voices.length}개의 Voice</b>를<br>진행자가 검토한 후 투표를 시작합니다.<br><br>잠시만 기다려주세요 ✓</p>
+    </div>`;
+    return;
+  }
+  const cur=ev.currentWork;
+  const w=ev.works[cur];
+  const sc=(ev.scores&&ev.scores[cur]&&ev.scores[cur][judgeNo])||null;
+  myScores=sc?{...sc}:{};
+  if(!isWritten(w)){
+    screen.innerHTML=`<div class="card center"><div class="big-emoji">⏳</div><h2>진행자를 기다리는 중...</h2><p class="sub">심사자 ${judgeNo}번</p></div>`;
+    return;
+  }
+  if(sc){
+    screen.innerHTML=`
+    <div class="card center">
+      <div class="big-emoji">✅</div>
+      <h1>Voice ${cur+1} 평가 완료!</h1>
+      <p class="sub">심사자 ${judgeNo}번 · 제출한 점수 합계 <b style="color:var(--green-deep)">${getCriteria().reduce((a,c)=>a+(sc[c.key]||0),0)}점</b></p>
+      <div class="note info">진행자가 다음 Voice으로 넘기면<br>자동으로 다음 평가가 시작됩니다.</div>
+      <button class="btn btn-ghost btn-sm" onclick="window.__editScore()">점수 수정하기</button>
+    </div>`;
+    return;
+  }
+  paintJudgeForm(w,cur);
+}
+function paintJudgeForm(w,cur){
+  const ev=STATE.event;
+  // 심사자 모바일: 이미지 그리드 (4장 레이아웃)
+  if(w.hasImg&&(imgCache[cur]===undefined||!imgCache[cur].length)){
+    imgCache[cur]=[];
+    loadImgsForWork(judgeEventId,cur).then(arr=>{
+      imgCache[cur]=arr;
+      const el=document.getElementById('judgeImgGrid');
+      if(el) el.outerHTML=imgGridHTML(arr,'judge-img-grid');
+    });
+  }
+  const curImgs=imgCache[cur]||[];
+  screen.innerHTML=`
+  <div class="card">
+    <div class="stepper"><span class="chip cur">심사자 ${judgeNo}번</span><span class="chip">Voice ${cur+1}/${ev.totalWorks}</span></div>
+    <div id="judgeImgGrid">${imgGridHTML(curImgs,'judge-img-grid')}</div>
+    <div class="judge-title">${esc(w.title||'(제목 없음)')}</div>
+    <p class="sub center" style="margin:4px 0 0;font-size:12px">Voice 내용은 정면 화면을 참고하세요</p>
+    <div class="crit" id="crit">
+      ${getCriteria().map(c=>`
+        <div class="crit-row">
+          <div class="crit-head">
+            <span class="crit-name">${c.name}</span>
+            <span class="crit-val" id="v_${c.key}">-<b>/10</b></span>
+          </div>
+          <div class="scale" data-key="${c.key}">
+            ${Array.from({length:MAX},(_,i)=>`<button data-v="${i+1}" onclick="window.__pick('${c.key}',${i+1})">${i+1}</button>`).join("")}
+          </div>
+        </div>`).join("")}
+    </div>
+    <button class="btn btn-green" style="margin-top:18px" onclick="window.__submitScore(${cur})">평가 제출 ✓</button>
+    <p class="sub center" style="font-size:12px;margin-top:10px">모든 항목을 선택해야 제출할 수 있어요.</p>
+  </div>`;
+  Object.keys(myScores).forEach(k=>pick(k,myScores[k],true));
+}
+function pick(key,v,silent){
+  myScores[key]=v;
+  const row=document.querySelector(`.scale[data-key="${key}"]`);
+  if(row){[...row.children].forEach(b=>{const bv=+b.dataset.v;b.classList.toggle("on",bv<=v);b.classList.toggle("hi",bv<=v&&v>=8);});}
+  const vEl=$("#v_"+key); if(vEl) vEl.innerHTML=`${v}<b>/10</b>`;
+}
+async function submitScore(cur){
+  for(const c of getCriteria()){if(!myScores[c.key])return toast("'"+c.name+"' 점수를 선택하세요");}
+  showLoad(true);
+  try{
+    const ev=await loadEvent(judgeEventId);
+    const scores=ev.scores||{};
+    if(!scores[cur])scores[cur]={};
+    scores[cur][judgeNo]={...myScores,t:Date.now()};
+    await updateDoc(evRef(judgeEventId),{scores});
+    showLoad(false);
+    toast("제출 완료 ✓");
+  }catch(e){showLoad(false);toast("제출 실패: "+e.message);}
+}
+async function editScore(){
+  const ev=STATE.event;const cur=ev.currentWork;
+  myScores={...(ev.scores[cur][judgeNo]||{})};
+  paintJudgeForm(ev.works[cur],cur);
+}
+
+/* ============================================================
+   8) 결과
+   ============================================================ */
+async function goResult(){
+  showLoad(true);
+  STATE.event=await loadEvent(STATE.eventId);
+  const ev=STATE.event;
+  imgCache=await loadAllImgs(STATE.eventId,ev.totalWorks);
+  showLoad(false);
+  const rows=[];
+  ev.works.forEach((w,i)=>{
+    if(!isWritten(w))return;
+    const sc=(ev.scores&&ev.scores[i])||{};
+    let total=0,judged=0;
+    Object.values(sc).forEach(js=>{judged++;getCriteria().forEach(c=>total+=(js[c.key]||0));});
+    rows.push({i,w,total,judged});
+  });
+  rows.sort((a,b)=>b.total-a.total);
+  $("#evTag").classList.remove("hidden");
+  $("#evTag").textContent="🏆 "+ev.name;
+  const medal=(r)=>r===0?'m1':r===1?'m2':r===2?'m3':'mx';
+  const cls=(r)=>r===0?'top1':r===1?'top2':r===2?'top3':'';
+  const rowHtml=(r,rk)=>{
+    const imgs=imgCache[r.i]||[];
+    const thumb=imgs[0]||"";
+    return `
+    <div class="rank ${cls(rk)}">
+      <div class="medal ${medal(rk)}">${rk<3?['🥇','🥈','🥉'][rk]:rk+1}</div>
+      ${thumb?`<img class="rank-thumb" src="${thumb}">`:`<div class="rank-thumb"></div>`}
+      <div class="rank-info">
+        <div class="nm">${esc(r.w.title||('Voice '+(r.i+1)))}</div>
+        <div class="who"><span>${esc(r.w.author||'이름 미입력')}</span> <span class="org">${esc(r.w.org||'')}</span></div>
+      </div>
+      <div class="rank-score">${r.total}<small>${r.judged}명 심사</small></div>
+    </div>`;
+  };
+  const top=rows.slice(0,5).map((r,i)=>rowHtml(r,i)).join("");
+  const rest=rows.slice(5).map((r,i)=>rowHtml(r,i+5)).join("");
+  screen.innerHTML=`
+  <div class="card">
+    <div class="stepper"><span class="chip cur">결과</span></div>
+    <h1>🏆 최종 순위</h1>
+    <p class="sub">심사자들의 점수 총합 기준입니다.<br><b style="color:var(--red-deep)">이제 작성자 소속·이름이 공개됩니다.</b></p>
+    ${rows.length?top:`<div class="note warn">아직 집계된 점수가 없습니다.</div>`}
+    ${rest?`
+      <button class="btn btn-ghost" id="moreBtn" style="margin-top:8px" onclick="document.getElementById('restBox').classList.toggle('hidden');this.textContent=document.getElementById('restBox').classList.contains('hidden')?'6위 이하 나머지 보기 ▾':'접기 ▴'">6위 이하 나머지 보기 ▾</button>
+      <div id="restBox" class="hidden" style="margin-top:12px">${rest}</div>`:""}
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__hub()">허브로</button>
+      <button class="btn btn-green" onclick="window.__home()">홈으로</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   9) 관리자 모드
+   ============================================================ */
+let adminUnlocked=false;
+function adminGate(){
+  if(!guardFb())return;
+  if(adminUnlocked){adminPanel();return;}
+  screen.innerHTML=`
+  <div class="card">
+    <div class="big-emoji">🔒</div>
+    <h1 class="center">관리자 모드</h1>
+    <label class="fl">마스터 비밀번호</label>
+    <input type="password" id="masterPw" placeholder="관리자 비밀번호">
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="window.__home()">뒤로</button>
+      <button class="btn btn-dark" onclick="window.__adminUnlock()">입장 →</button>
+    </div>
+  </div>`;
+}
+function adminUnlock(){
+  const pw=$("#masterPw").value;
+  if(pw!==_master())return toast("마스터 비밀번호가 틀립니다");
+  adminUnlocked=true;
+  adminPanel();
+}
+async function adminPanel(){
+  $("#evTag").classList.add("hidden");
+  showLoad(true);
+  let items=[];
+  try{
+    const snap=await getDocs(collection(db,"events"));
+    snap.forEach(d=>{const v=d.data();items.push({id:d.id,name:v.name,owner:v.owner,phase:v.phase,n:v.totalWorks});});
+  }catch(e){}
+  showLoad(false);
+  items.reverse();
+  const phaseTxt={input:"입력중",judging:"심사중",done:"완료"};
+  screen.innerHTML=`
+  <div class="card">
+    <div class="big-emoji">🛠️</div>
+    <h1 class="center">전체 이벤트 관리</h1>
+    <p class="sub center">총 <b>${items.length}</b>개의 이벤트.</p>
+    <div class="note warn">⚠️ 삭제는 되돌릴 수 없습니다.</div>
+    ${items.length?items.map(it=>`
+      <div class="rank" style="border-color:var(--line)">
+        <div class="rank-info">
+          <div class="nm">${esc(it.name)}</div>
+          <div class="who" style="color:var(--gray)">${esc(it.owner||'주최자 미입력')} · Voice ${it.n||0}개 · ${phaseTxt[it.phase]||''}</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:3px">${it.id}</div>
+        </div>
+        <button class="btn btn-red btn-sm" onclick="window.__adminDelete('${it.id}','${esc(it.name).replace(/'/g,"")}')">삭제</button>
+      </div>`).join(""):`<p class="sub center">삭제할 이벤트가 없습니다.</p>`}
+    <button class="btn btn-ghost" style="margin-top:14px" onclick="window.__home()">← 홈으로</button>
+  </div>`;
+}
+async function adminDelete(id,name){
+  if(!confirm(`'${name}' 이벤트를 정말 삭제할까요?`))return;
+  showLoad(true);
+  try{
+    await deleteDoc(evRef(id));
+    showLoad(false);
+    toast("삭제되었습니다");
+    adminPanel();
+  }catch(e){showLoad(false);toast("삭제 실패: "+e.message);}
+}
+
+/* 데모 */
+function demo(){
+  screen.innerHTML=`<div class="card"><h1>디자인 미리보기</h1><button class="btn btn-green">녹색 버튼</button></div>`;
+}
+
+/* ============================================================
+   전역 핸들러
+   ============================================================ */
+
+/* 라이트박스 */
+function lbOpen(src){
+  document.getElementById('lbImg').src=src;
+  document.getElementById('lightbox').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function lbClose(e){
+  if(e&&e.target===document.getElementById('lbImg')) return; // 이미지 클릭은 무시
+  document.getElementById('lightbox').classList.remove('on');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') lbClose(); });
+
+window.__home=renderHome;
+window.__newEvent=newEventForm;
+window.__buildCritInputs=buildCritInputs;
+window.__openEvent=openEventForm;
+window.__createEvent=createEvent;
+window.__doOpen=doOpen;
+window.__hub=enterHub;
+window.__goInput=goInput;
+window.__setCount=setCount;
+window.__saveWork=saveWork;
+window.__inputMove=inputMove;
+window.__delImg=delImg;
+window.__goJudgeSetup=goJudgeSetup;
+window.__openPreview=openPreview;
+window.__startJudging=startJudging;
+window.__hostScreen=hostScreen;
+window.__hostMove=hostMove;
+window.__finishJudging=finishJudging;
+window.__hubFromHost=hubFromHost;
+window.__pick=pick;
+window.__startJudgeWatch=startJudgeWatch;
+window.__submitScore=submitScore;
+window.__editScore=editScore;
+window.__startVoting=startVoting;
+window.__goResult=goResult;
+window.__admin=adminGate;
+window.__adminUnlock=adminUnlock;
+window.__adminDelete=adminDelete;
+window.__previewDetail=previewDetail;
+window.__previewBack=previewBack;
+window.__toast=toast;
+window.__demo=demo;
+window.__lbOpen=lbOpen;
+window.__lbClose=lbClose;
+
+/* 시작 */
+renderHome();
+</script>
+</body>
+</html>
